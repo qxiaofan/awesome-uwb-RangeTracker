@@ -43,7 +43,6 @@ class tracker():
             return True
 
 
-
     def get_valid_measurement_range(self, rangeMeas, time):
         if uwbPassOutlierDetector(self.histRange, rangeMeas):
             calibUWB = 1.11218892 * rangeMeas - 0.03747436  # TUM basketball calibration result
@@ -78,6 +77,7 @@ class tracker():
         headmeas = measurement[1]
         timeStamp = measurement[2]
         acc = measurement[3]
+        # Outlier removal
         if self.get_valid_measurement_range(rangemeas, timeStamp):
             self.speedEstimator.estimate_speed(measurement[0], timeStamp, self.speedIinterval)
         self.update_heading_measurement(headmeas,timeStamp)
@@ -94,12 +94,20 @@ class tracker():
 
     def sim_step(self, measurement):
         rangemeas = measurement[0]
+        
         headmeas = measurement[1]
+        
         timeStamp = measurement[2]
+        
         self.update_sim_measurement_range(rangemeas,timeStamp)
+        
+        #Speed Estimator
         self.speedEstimator.estimate_speed(rangemeas, timeStamp, self.speedIinterval)
+        
         self.update_heading_measurement(headmeas,timeStamp)
+        
         self.ekf.ekfStep([self.newMeasRange, self.newMeasHeading])
+        
         if self.withSpeedEstimator and self.linear_motion_check() and self.speedEstimator.validSpeedUpdated:
             estimatedVel = self.speedEstimator.get_vel()
             self.ekf.x[3] = 0.5*self.ekf.x[3] + 0.5*estimatedVel
@@ -136,6 +144,7 @@ class customizedEKF(ExtendedKalmanFilter):
         self.x = initialState
 
     def predict_x(self, state):
+        #print("\n **********predict_x() ... *******")
         x = self.x[0]
         y = self.x[1]
         o = self.x[2]
@@ -187,6 +196,7 @@ class customizedEKF(ExtendedKalmanFilter):
 
     def ekfStep(self, measurement):
         self.calF()
+        #print("\n predict() ... ")
         self.predict()
         self.x[2] = normalizeAngle(self.x[2])
         self.update(measurement, self.H_Jac, self.H_state, residual=self.residualWithAng)
@@ -195,3 +205,4 @@ class customizedEKF(ExtendedKalmanFilter):
         self.recordState.append(self.x)
         self.recordP.append(self.P)
         self.recordResidual.append(self.y)
+        

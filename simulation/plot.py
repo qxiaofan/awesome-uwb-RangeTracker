@@ -23,11 +23,13 @@ def plot_sim(sim, ref_ekf, my_ekf):
         orientationRef.append(ref_ekf.ekf.recordState[idx][2])
         linVelRef.append(ref_ekf.ekf.recordState[idx][3])
 
+    print("posX,posY,orientation,linVel") 
     for idx in range(len(my_ekf.ekf.recordState)):
         posX.append(my_ekf.ekf.recordState[idx][0])
         posY.append(my_ekf.ekf.recordState[idx][1])
         orientation.append(my_ekf.ekf.recordState[idx][2])
         linVel.append(my_ekf.ekf.recordState[idx][3])
+        print(my_ekf.ekf.recordState[idx][0], my_ekf.ekf.recordState[idx][1],my_ekf.ekf.recordState[idx][2],my_ekf.ekf.recordState[idx][3])
 
     plt.figure(figsize=(7, 7))
     #colors = plt.cm.rainbow(np.linspace(0, 1, len(posX)))
@@ -79,15 +81,19 @@ def plot_sim_error(sim, ref_ekf, my_ekf):
     error  = []
     errorRef = []
 
-
-    for idx in range(len(ref_ekf.ekf.recordState)):
+    #print("plot_sim_error")
+    #print("num len: ",len(ref_ekf.ekf.recordState))
+    #for idx in range(len(ref_ekf.ekf.recordState)-1):
+    for idx in range(len(sim.x)-1):
         posXRef.append(ref_ekf.ekf.recordState[idx][0])
         posYRef.append(ref_ekf.ekf.recordState[idx][1])
         orientationRef.append(ref_ekf.ekf.recordState[idx][2])
         linVelRef.append(ref_ekf.ekf.recordState[idx][3])
+    
         errorRef.append(np.linalg.norm([posXRef[idx] - sim.x[idx],posYRef[idx]-sim.y[idx]]))
 
-    for idx in range(len(my_ekf.ekf.recordState)):
+    #for idx in range(len(my_ekf.ekf.recordState)):
+    for idx in range(len(sim.x)-1):
         posX.append(my_ekf.ekf.recordState[idx][0])
         posY.append(my_ekf.ekf.recordState[idx][1])
         orientation.append(my_ekf.ekf.recordState[idx][2])

@@ -18,6 +18,8 @@ def saveToFile(name):
         pickle.dump(name, output)
     output.close()
 
+
+
 def readFromFile():
     print("Read simulation data from ./result_cache/lastSimData.pkl")
     with open(curPath+'/result_cache/lastSimData.pkl', 'rb') as input:
@@ -28,7 +30,8 @@ class sim():
     def __init__(self):
         self.x = [10., ]
         self.y = [0., ]
-        self.dt = 0.005
+        #self.dt = 0.05
+        self.dt = 0.1
         self.lVel = [0.0]
         self.aVel = [0.0, ]
         self.vX = [-0.3]
@@ -126,7 +129,8 @@ class sim():
 
             range_meas = np.linalg.norm([self.x[step], self.y[step]])
             self.uwb.append(range_meas)
-            range_noisy = range_meas + np.random.normal(0, 0.005)
+            #range_noisy = range_meas + np.random.normal(0, 0.005)
+            range_noisy = range_meas + np.random.normal(0, 0.30)
             self.uwbNoisy.append(range_noisy)
 
 
@@ -161,4 +165,4 @@ if __name__ == '__main__':
     #simData.plot_sim()
     #saveToFile(simData)
     simData = readFromFile()
-    #print("simData: ",simData)
+    print(simData)

@@ -4,7 +4,6 @@ from KalmanFilter import KalmanFilter
 import math
 
 
-
 class speedEstimator():
     def __init__(self):
         self.validSpeedUpdated = False
@@ -37,6 +36,7 @@ class speedEstimator():
             return False
 
 
+    #Key range queue maintenance
     def range_key_pairs_maintaince(self, range, time):
         if abs(range-self.lastPoint) > self.distanceThreshold:
             self.lastPoint = range
@@ -47,15 +47,23 @@ class speedEstimator():
 
 
     def estimate_speed(self, range, time, interval):
+
+        #Range smoothing
         fdragne = self.filter_range(range)
+ 
         self.speedWindowSize = 5+ 0.1*range
 
-        if self.range_key_pairs_maintaince(fdragne, time) and len(self.keyMeasPairs) >= 2*interval:
+        if self.range_key_pairs_maintaince(fdragne, time) and len(self.keyMeasPairs) >= 2*interval: #找到对应的三个位置，r0,r1,r2
+            
+            #Speed Calculation 
             tempresult = self.vel_from_dis(self.keyMeasPairs[-2*interval][0], self.keyMeasPairs[-interval][0],
                                            self.keyMeasPairs[-1][0], self.keyMeasPairs[-2*interval][1],
                                            self.keyMeasPairs[-interval][1], self.keyMeasPairs[-1][1])
+                                           
+            #Variable window speed smoothing                               
             if tempresult:
                 self.speedWindow.append(tempresult)
+                
                 if len(self.speedWindow)>(self.speedWindowSize -1):
                     self.curSpeed = np.median(self.speedWindow)  # Estimation of this linear motion speed
                     self.speedRecord.append(self.curSpeed)

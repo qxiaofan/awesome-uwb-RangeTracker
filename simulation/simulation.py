@@ -18,7 +18,7 @@ if __name__ == '__main__':
        #simData = readFromFile()
        #print("simData: ",simData)
     #else:
-    print("generate simulation data\n")
+    #print("generate simulation data\n")
     simData = sim()
     simData.generate_sim_root()
     simData.generate_sim()
@@ -41,10 +41,40 @@ if __name__ == '__main__':
     refMyTracker.ekf.set_initial_state(initialState)
     myTrackerExp.ekf.set_initial_state(initialState)
 
+   #  #read uwb imu data from local txt file
+   #  file_name  = "/home/yong/workspace/2_project_files/A_single_anchor_imu_ekf/awesome-uwb-RangeTracker/simulation/imu_uwb_align.txt"
+   #  dataset= []
+   #  file  = open(file_name, mode='r')
+   #  for line in file:
+   #     line = line.split()
+   #     line = list(map(float,line))
+   #     dataset.append(line)
+   #  file.close()
+   #  #print(dataset)
+
+   # # # load measurement input from local txt
+   #  timeInput = [x[0] for x in dataset] 
+   #  uwbInput = [x[1] for x in dataset]
+   #  yawInput = [x[3] for x in dataset]
+
+    #load  uwb and imu yaw data from local txt
+    #print("timeInput: ", timeInput)
+    #print("uwbInput: ", uwbInput)
+    #print("yawInput: ", yawInput)
+  
+
     # Choose measurement input
     uwbInput = simData.uwbNoisy
     yawInput = simData.yawNoisy
     timeInput = simData.timestamp
+
+    print("timeInput: ", timeInput)
+    print('\n\n')
+    print("uwbInput: ", uwbInput)
+    print('\n\n')
+    print("yawInput: ", yawInput)
+    print('\n\n')
+     
 
     print("Start the Tracker")
     for step in range(len(uwbInput)):

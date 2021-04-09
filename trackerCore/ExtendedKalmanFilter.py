@@ -360,7 +360,7 @@ class ExtendedKalmanFilter(object):
             Optional control vector. If non-zero, it is multiplied by B
             to create the control input into the system.
         """
-
+      
         self.predict_x(u)
         self.P = dot(self.F, self.P).dot(self.F.T) + self.Q
 
